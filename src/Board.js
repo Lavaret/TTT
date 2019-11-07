@@ -5,31 +5,36 @@ class Board extends React.Component {
 
     renderSquare(i) {
         return (
-            <Square
+            <Square key={i}
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
             />
         );
     }
 
+    createBoard() {
+        let rows = [];
+        let squareNumber = 0;
+
+        for (let i = 0; i < 3; i++) {
+            let squares = [];
+
+            for (let j = 0; j < 3; j++) {
+                squares.push(this.renderSquare(squareNumber));
+                squareNumber++;
+            }
+            rows.push(<div key={i} className="board-row">{squares}</div>);
+        }
+        return rows;
+    };
+
     render() {
+
+        //huge thanks to https://medium.com/@dmitrynozhenko/9-ways-to-implement-css-in-react-js-ccea4d543aa3
+        //with implementing rendering table by loop
         return (
             <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {this.createBoard()}
             </div>
         );
     }

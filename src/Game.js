@@ -7,8 +7,12 @@ class Game extends React.Component {
         this.state = {
             history: [{
                 squares: Array(9).fill(null),
+                field: Array(9).fill(null),
             }],
             xIsNext: true,
+            stepNumber: 0,
+            choosenStep: null,
+            showReverse: false,
         }
     }
 
@@ -34,7 +38,7 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        const history = this.state.history;
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
 
@@ -47,19 +51,51 @@ class Game extends React.Component {
         this.setState({
             history: history.concat([{
                 squares: squares,
+                field: i,
             }]),
-            xIsNext: !this.state.xIsNext
+            stepNumber: history.length,
+            xIsNext: !this.state.xIsNext,
         });
     }
 
+    changeDirection() {
+        const currentState = this.state.showReverse;
+        this.setState(
+            {showReverse: !currentState}
+        )
+    }
+
+    jumpTo(step) {
+        this.setState({
+            stepNumber: step,
+            xIsNext: (step % 2) === 0,
+        })
+    }
+
     render() {
-        const history = this.state.history;
-        const current = history[history.length - 1];
+        let history = this.state.history.slice();
+        const current = history[this.state.stepNumber];
         const winner = this.calculateWinner(current.squares);
+
+        const moves = history.map((step, move) => {
+            const row = Math.ceil((step.field + 1) / 3);
+            const column = (step.field % 3) + 1;
+            const desc = move ? `#${move} ${step.squares[step.field]} [${column}, ${row}]` : 'Go to game start';
+
+            const bold = {
+                fontWeight: this.state.stepNumber === move ? 'bold' : 'normal'
+            };
+
+            return(
+                <li key={move}>
+                    <button style={bold} onClick={() => this.jumpTo(move)}>{desc}</button>
+                </li>
+            );
+        });
 
         let status;
         if (winner) {
-            status = 'And the winner IS: ' + winner;
+            status = 'And the winner iiis.. : ' + winner;
         } else {
             status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -74,7 +110,12 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
-                    <ol>{/* TODO */}</ol>
+                    <div
+                        className={this.state.showReverse ? 'toggle-button reverse' : 'toggle-button'}
+                        onClick={() => this.changeDirection()}>
+                        V
+                    </div>
+                    <ol className="moves">{moves}</ol>
                 </div>
             </div>
         );
