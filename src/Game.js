@@ -11,7 +11,7 @@ class Game extends React.Component {
             }],
             xIsNext: true,
             stepNumber: 0,
-            field: null,
+            choosenStep: null,
         }
     }
 
@@ -60,7 +60,7 @@ class Game extends React.Component {
     jumpTo(step) {
         this.setState({
             stepNumber: step,
-            xIsNext: (step % 2) === 0
+            xIsNext: (step % 2) === 0,
         })
     }
 
@@ -73,9 +73,13 @@ class Game extends React.Component {
             const row = Math.ceil((step.field + 1) / 3);
             const column = (step.field % 3) + 1;
             const desc = move ? `#${move} ${step.squares[step.field]} [${column}, ${row}]` : 'Go to game start';
+            const bold = {
+                fontWeight: this.state.stepNumber === move ? 'bold' : 'normal'
+            };
+
             return(
                 <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                    <button style={bold} onClick={() => this.jumpTo(move)}>{desc}</button>
                 </li>
             );
         });
