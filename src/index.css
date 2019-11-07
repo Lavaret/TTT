@@ -48,3 +48,25 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+.toggle-button {
+  text-align: center;
+  font-weight: bolder;
+  font-size: 17px;
+  border: 1px solid #eee;
+  width: 20px;
+  padding: 10px;
+  color: #BABACA;
+}
+
+.toggle-button:hover {
+  background-color: #eeeeee;
+}
+
+.toggle-button:active {
+  background-color: #BABACA;
+}
+
+.toggle-button.reverse {
+  transform: rotate(180deg);
+}
