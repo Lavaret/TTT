@@ -61,7 +61,9 @@ class Game extends React.Component {
     changeDirection() {
         const currentState = this.state.showReverse;
         this.setState(
-            {showReverse: !currentState}
+            {
+                showReverse: !currentState
+            }
         )
     }
 
@@ -73,11 +75,12 @@ class Game extends React.Component {
     }
 
     render() {
-        let history = this.state.history.slice();
+        let history = this.state.history;
+
         const current = history[this.state.stepNumber];
         const winner = this.calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
+        let moves = history.map((step, move) => {
             const row = Math.ceil((step.field + 1) / 3);
             const column = (step.field % 3) + 1;
             const desc = move ? `#${move} ${step.squares[step.field]} [${column}, ${row}]` : 'Go to game start';
@@ -100,6 +103,10 @@ class Game extends React.Component {
             status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
         }
 
+        if (this.state.showReverse) {
+            moves.reverse();
+        }
+
         return (
             <div className="game">
                 <div className="game-board">
@@ -113,7 +120,7 @@ class Game extends React.Component {
                     <div
                         className={this.state.showReverse ? 'toggle-button reverse' : 'toggle-button'}
                         onClick={() => this.changeDirection()}>
-                        V
+                        <div>change order</div><div className="arrow">V</div>
                     </div>
                     <ol className="moves">{moves}</ol>
                 </div>
