@@ -88,7 +88,8 @@ class Game extends React.Component {
             const desc = move ? `#${move} ${step.squares[step.field]} [${column}, ${row}]` : 'Go to game start';
 
             const bold = {
-                fontWeight: this.state.stepNumber === move ? 'bold' : 'normal'
+                fontWeight: this.state.stepNumber === move ? 'bold' : 'normal',
+                fontSize: this.state.stepNumber === move ? '16px' : '14px'
             };
 
             return(
@@ -100,11 +101,11 @@ class Game extends React.Component {
 
         let status;
         if (winner) {
-            status = 'And the winner is.. : ' + winner.name;
+            status = 'And the winner is..  ' + winner.name;
         } else if (this.state.draw) {
             status = 'DRAW';
         } else {
-            status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
+            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
         if (this.state.showReverse) {
@@ -113,6 +114,7 @@ class Game extends React.Component {
 
         return (
             <div className="game">
+                <div className="status">{status}</div>
                 <div className="game-board">
                     <Board
                         squares={current.squares}
@@ -121,7 +123,6 @@ class Game extends React.Component {
                     />
                 </div>
                 <div className="game-info">
-                    <div>{status}</div>
                     <div
                         className={this.state.showReverse ? 'toggle-button reverse' : 'toggle-button'}
                         onClick={() => this.changeDirection()}>
