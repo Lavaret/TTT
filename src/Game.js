@@ -13,6 +13,7 @@ class Game extends React.Component {
             stepNumber: 0,
             choosenStep: null,
             showReverse: false,
+            draw: false,
         }
     }
 
@@ -41,11 +42,11 @@ class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        const winner = this.calculateWinner(squares);
 
-        if (this.calculateWinner(squares) || squares[i]) {
+        if ( winner || squares[i]) {
             return;
         }
-
         squares[i] = this.state.xIsNext ? 'X' : 'O';
 
         this.setState({
@@ -55,6 +56,7 @@ class Game extends React.Component {
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+            draw: !winner && !squares.includes(null)
         });
     }
 
@@ -99,6 +101,8 @@ class Game extends React.Component {
         let status;
         if (winner) {
             status = 'And the winner is.. : ' + winner.name;
+        } else if (this.state.draw) {
+            status = 'DRAW';
         } else {
             status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
         }
@@ -121,7 +125,7 @@ class Game extends React.Component {
                     <div
                         className={this.state.showReverse ? 'toggle-button reverse' : 'toggle-button'}
                         onClick={() => this.changeDirection()}>
-                        <div>change order</div><div className="arrow">V</div>
+                        <div>change order</div><div className="arrow">&#8593;</div>
                     </div>
                     <ol className="moves">{moves}</ol>
                 </div>
