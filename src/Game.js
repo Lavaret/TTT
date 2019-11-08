@@ -13,6 +13,7 @@ class Game extends React.Component {
             stepNumber: 0,
             choosenStep: null,
             showReverse: false,
+            draw: false,
         }
     }
 
@@ -31,7 +32,7 @@ class Game extends React.Component {
         for (let i = 0; i < lines.length; i++) {
             const [a, b, c] = lines[i];
             if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+                return {name: squares[a], fields: lines[i]};
             }
         }
         return null;
@@ -41,11 +42,11 @@ class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        const winner = this.calculateWinner(squares);
 
-        if (this.calculateWinner(squares) || squares[i]) {
+        if ( winner || squares[i]) {
             return;
         }
-
         squares[i] = this.state.xIsNext ? 'X' : 'O';
 
         this.setState({
@@ -55,13 +56,16 @@ class Game extends React.Component {
             }]),
             stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
+            draw: !winner && !squares.includes(null)
         });
     }
 
     changeDirection() {
         const currentState = this.state.showReverse;
         this.setState(
-            {showReverse: !currentState}
+            {
+                showReverse: !currentState
+            }
         )
     }
 
@@ -73,11 +77,12 @@ class Game extends React.Component {
     }
 
     render() {
-        let history = this.state.history.slice();
+        let history = this.state.history;
+
         const current = history[this.state.stepNumber];
         const winner = this.calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
+        let moves = history.map((step, move) => {
             const row = Math.ceil((step.field + 1) / 3);
             const column = (step.field % 3) + 1;
             const desc = move ? `#${move} ${step.squares[step.field]} [${column}, ${row}]` : 'Go to game start';
@@ -95,9 +100,15 @@ class Game extends React.Component {
 
         let status;
         if (winner) {
-            status = 'And the winner iiis.. : ' + winner;
+            status = 'And the winner is.. : ' + winner.name;
+        } else if (this.state.draw) {
+            status = 'DRAW';
         } else {
             status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');
+        }
+
+        if (this.state.showReverse) {
+            moves.reverse();
         }
 
         return (
@@ -105,6 +116,7 @@ class Game extends React.Component {
                 <div className="game-board">
                     <Board
                         squares={current.squares}
+                        winnerSquares={winner}
                         onClick={(i) => this.handleClick(i)}
                     />
                 </div>
@@ -113,7 +125,7 @@ class Game extends React.Component {
                     <div
                         className={this.state.showReverse ? 'toggle-button reverse' : 'toggle-button'}
                         onClick={() => this.changeDirection()}>
-                        V
+                        <div>change order</div><div className="arrow">&#8593;</div>
                     </div>
                     <ol className="moves">{moves}</ol>
                 </div>

@@ -36,6 +36,10 @@ ol, ul {
   outline: none;
 }
 
+.square.win {
+  color: #B2A211;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }
@@ -50,11 +54,13 @@ ol, ul {
 }
 
 .toggle-button {
+  display: flex;
+  justify-content: center;
   text-align: center;
   font-weight: bolder;
   font-size: 17px;
   border: 1px solid #eee;
-  width: 20px;
+  width: 150px;
   padding: 10px;
   color: #BABACA;
 }
@@ -67,6 +73,10 @@ ol, ul {
   background-color: #BABACA;
 }
 
-.toggle-button.reverse {
+.toggle-button.reverse .arrow {
   transform: rotate(180deg);
+}
+
+.arrow {
+    margin-left: 15px;
 }
